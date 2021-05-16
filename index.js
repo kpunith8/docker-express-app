@@ -1,0 +1,37 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const {
+  MONGO_IP,
+  MONGO_PASSWORD,
+  MONGO_PORT,
+  MONGO_USER,
+  EXPRESS_PORT,
+} = require("./config/config");
+
+const app = express();
+const connectWithRetry = () =>
+  mongoose
+    // Grab the IP address by ispecting running mongo container
+    // .connect("mongodb://root:root@mongo:27017/?authSource=admin")
+    // Instead of using the random IP, use the service name assigned in docker-compose.yml
+    // file to connect to the db, whenever new image created and started a new container
+    .connect(
+      `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    )
+    .then(() => console.log("DB connection successful!"))
+    .catch((err) => {
+      console.log("Error connecting to the DB", err);
+      // Retry after 3 seconds
+      setTimeout(connectWithRetry, 3000);
+    });
+
+// Retry connecting to the DB if in case mongo container is not up and running
+connectWithRetry();
+
+app.get("/", (req, res) => res.send("<h2>Docker express app!!</h2>"));
+
+app.listen(EXPRESS_PORT, () => console.log(`Listening on ${EXPRESS_PORT}`));
