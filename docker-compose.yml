@@ -2,8 +2,9 @@ version: "3"
 services:
   node-express-app: # Name of the container
     build: .
-    ports:
-      - "3000:3000"
+    # Ports are required if ngnix is not used as proxy
+    # ports:
+    #   - "3000-3001:3000"
     environment:
       - PORT=3000
     depends_on:
@@ -16,6 +17,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
     volumes:
       - mongo-db:/data/db # Using named volumes
+
+  redis:
+    image: redis
+
+  nginx:
+    image: nginx:stable-alpine
+    ports: 
+      - "3000:80"
+    volumes: 
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
 # This is make sure mongo-db named volume works without any errors
 volumes:

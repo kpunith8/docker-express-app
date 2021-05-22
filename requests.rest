@@ -1,0 +1,21 @@
+POST http://localhost:3000/api/v1/users/signup
+  content-type: application/json
+  
+  {
+    "username": "kpunith8",
+    "password": "randomPassword"
+  }
+
+###
+
+POST http://localhost:3000/api/v1/users/signin
+  content-type: application/json
+  
+  {
+    "username": "kpunith8",
+    "password": "randomPassword"
+  }
+
+###
+
+GET http://localhost:3000/api/v1/users/kpunith8
