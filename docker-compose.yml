@@ -2,6 +2,7 @@ version: "3"
 services:
   node-express-app: # Name of the container
     build: .
+    # image: kpunith8/node-app # Required only if you want pull the image from docker hub
     # Ports are required if ngnix is not used as proxy
     # ports:
     #   - "3000-3001:3000"
